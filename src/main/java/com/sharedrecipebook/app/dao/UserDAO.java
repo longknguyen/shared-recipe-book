@@ -12,6 +12,10 @@ public class UserDAO {
     @Autowired
     private DataSource dataSource;
 
+    public void createUser(User user) throws SQLException {
+        // TODO;
+    }
+
     public User getUserById(int id) throws SQLException {
         // TODO;
         return null;

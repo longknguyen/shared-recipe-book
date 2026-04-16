@@ -16,4 +16,15 @@ public class UserController {
     public User getUser(@PathVariable int id) throws Exception {
         return null;
     }
+
+    @PostMapping("/register")
+    public void register(@RequestBody User user) throws Exception {
+        userService.registerUser(user);
+    }
+
+    @PostMapping("/login")
+    public User login(@RequestBody User user) throws Exception {
+        // TODO;
+        return null;
+    }
 }
