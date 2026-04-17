@@ -12,7 +12,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://<your-server>/<your-db>");
+        ds.setUrl("jdbc:mysql://localhost:3306/ejj9fs_a?useSSL=false&severTimezone=UTC");
         ds.setUsername("<username>");
         ds.setPassword("<password>");
         return ds;
