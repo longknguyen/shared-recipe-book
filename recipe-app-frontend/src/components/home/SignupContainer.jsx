@@ -10,14 +10,14 @@ export default function SignupContainer(){
                 &#8592;
             </Link>
         <div className="min-h-screen flex items-center justify-center" >
-            <div className="w-full max-w-4xl min-h-[600px] bg-slate-200 rounded-2xl shadow-xl flex overflow-hidden">
-                <div className="w-1/2 flex flex-col justify-center bg-gradient-to-bl from-[#F1524A] to-[#F3C0BE]">
-                    <h1 className="text-center font-serif text-4xl ">
-                        <span className={"text-black"}>Your&nbsp;Journey&nbsp;With&nbsp;</span>{" "}
+            <div className="w-full max-w-3xl min-h-[600px] bg-slate-200 rounded-2xl shadow-xl flex overflow-hidden">
+                <div className="w-1/2 relative flex flex-col bg-gradient-to-bl from-[#F1524A] to-[#d12c26]">
+                    <h1 className="absolute bottom-4 left-4 font-serif text-4xl ">
+                        <span className={"text-white"}>Your&nbsp;</span>{" "}
                         <br />
-                        <span className={"text-[#F3C0BE] font-bold"}>Foodie</span>{" "}
+                        <span className={"text-white"}>Journey&nbsp;With&nbsp;</span>{" "}
                         <br/>
-                        <span className={"text-black"}>Starts&nbsp;Here</span>{" "}
+                        <span className={"text-white"}>Foodie&nbsp;tarts&nbsp;Here</span>{" "}
                     </h1>
                 </div>
 
@@ -31,7 +31,7 @@ export default function SignupContainer(){
                                    className="w-full py-2 pl-3 pr-3  text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100"/>
                             <input type="" placeholder="password"
                                    className="w-full py-2 pl-3 pr-3  text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100"/>
-                            <button type="submit" className=" w-1/2 mx-auto block py-2 pl-3 pr-3 bg-[#F1524A] rounded-full text-white hover:bg-[#D4524D] ">
+                            <button type="submit" className=" w-full m py-2 pl-3 pr-3 bg-[#F1524A] rounded-full text-white hover:bg-[#D4524D] ">
                                 Sign Up
                             </button>
                         </div>
