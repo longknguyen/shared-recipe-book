@@ -22,7 +22,7 @@ export default function Home() {
                             Enjoy extraordinary deliciousness in every dish you make.</span>
                     </div>
 
-                    <form className="flex items-center justify-center text-black">
+                    <form className="flex items-center justify-center text-black dark:text-white">
                         <div className={"relative w-full"}>
                             <input type="search" placeholder="Search for your favourite recipes..."
                                    className="w-full py-4 pl-4 pr-32 text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A]"/>
