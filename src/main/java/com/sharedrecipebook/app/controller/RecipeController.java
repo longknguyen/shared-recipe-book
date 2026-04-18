@@ -20,6 +20,12 @@ public class RecipeController {
         return null;
     }
 
+    @GetMapping("/search")
+    public List<Recipe> search(@RequestParam String query) {
+        // TODO;
+        return null;
+    }
+
     @GetMapping("/category/{name}")
     public List<Recipe> getByCategory(@PathVariable String name) throws Exception {
         // TODO;
