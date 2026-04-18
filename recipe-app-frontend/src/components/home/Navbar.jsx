@@ -28,7 +28,7 @@ export default function Navbar() {
                     About
                 </Link>
                 <Link
-                    to="/login"
+                    to="/"
                     className="text-black hover:underline hover:text-[#E8524A] transition"
                 >
                     Contact Us
