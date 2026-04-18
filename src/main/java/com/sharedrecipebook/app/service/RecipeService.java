@@ -16,4 +16,9 @@ public class RecipeService {
         // TODO;
         return null;
     }
+
+    public List<Recipe> search(String query) {
+        // TODO;
+        return null;
+    }
 }
