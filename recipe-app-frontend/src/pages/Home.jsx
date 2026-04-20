@@ -14,7 +14,7 @@ export default function Home() {
 
     return(
         <>
-            <div className={"relative w-full h-screen overflow-hidden bg-[url('./assets/home/background.webp')] bg-cover bg-no-repeat"}>
+            <div className={"relative w-full h-screen overflow-hidden bg-[url('./assets/home/background.png')] bg-cover bg-no-repeat"}>
                 <Navbar></Navbar>
                 <div className={"absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"}>
                     <div className={"text-5xl font-semibold"}>
