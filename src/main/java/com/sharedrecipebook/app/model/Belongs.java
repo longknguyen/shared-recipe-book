@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Belongs {
-    // TODO
     private int recId;
+    private int catId;
 }
