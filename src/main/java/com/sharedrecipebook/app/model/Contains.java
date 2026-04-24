@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Contains {
-    // TODO
     private int allId;
+    private int recId;
 }

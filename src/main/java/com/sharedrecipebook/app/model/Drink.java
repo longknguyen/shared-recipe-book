@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Drink {
-    // TODO
     private int recId;
+    private double alcPerc;
 }
