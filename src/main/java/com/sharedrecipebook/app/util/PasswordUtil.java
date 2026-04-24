@@ -4,12 +4,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class PasswordUtil {
     public static String hashPassword(String password) {
-        // TODO;
-        return null;
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     public static boolean checkPassword(String password, String hashed) {
-        // TODO;
-        return false;
+        return BCrypt.checkpw(password, hashed);
     }
 }
