@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Collection {
-    // TODO
     private int usrId;
+    private String collName;
 }
