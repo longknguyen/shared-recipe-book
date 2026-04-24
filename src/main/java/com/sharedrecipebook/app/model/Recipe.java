@@ -17,5 +17,7 @@ import lombok.*;
 @Builder
 public class Recipe {
     private int recID;
-    // TODO;
+    private int prepTime;
+    private String dishName;
+    private String directions;
 }
