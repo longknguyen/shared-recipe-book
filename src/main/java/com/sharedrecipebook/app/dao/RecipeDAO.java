@@ -46,7 +46,14 @@ public class RecipeDAO {
     }
 
     public void addRecipeToCollection(int recID, int usrID, String collName) throws SQLException {
-        // TODO;
+        String sql = "INSERT INTO saved_in (rec_id, usr_id, coll_name) VALUES (?, ?, ?)";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, recID);
+            ps.setInt(2, usrID);
+            ps.setString(3, collName);
+            ps.executeUpdate();
+        }
     }
 
     public List<Recipe> getAllRecipes() throws SQLException {
@@ -93,7 +100,27 @@ public class RecipeDAO {
     }
 
     public List<Recipe> getReviewsByRecipe(int recID) throws SQLException {
-        // TODO;
-        return null;
+        String sql = """
+                SELECT DISTINCT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                JOIN review rv ON rv.rec_id = r.rec_id
+                WHERE r.rec_id = ?
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, recID);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(Recipe.builder()
+                            .recID(rs.getInt("rec_id"))
+                            .prepTime(rs.getInt("prep_time"))
+                            .dishName(rs.getString("dish_name"))
+                            .directions(rs.getString("direction"))
+                            .build());
+                }
+                return out;
+            }
+        }
     }
 }
