@@ -16,8 +16,19 @@ public class ReviewService {
         reviewDAO.addReview(r);
     }
 
-    public List<Review> getReviews(int recId) throws Exception {
-        // TODO;
-        return null;
+    public void editReview(Review r) throws Exception {
+        reviewDAO.editReview(r);
+    }
+
+    public List<Review> getReviewsByRecipe(int recId) throws Exception {
+        return reviewDAO.getReviewsByRecipe(recId);
+    }
+
+    public List<Review> getReviewsByUser(int usrId) throws Exception {
+        return reviewDAO.getReviewsByUser(usrId);
+    }
+
+    public void deleteReview(Review r) throws Exception {
+        reviewDAO.deleteReview(r);
     }
 }

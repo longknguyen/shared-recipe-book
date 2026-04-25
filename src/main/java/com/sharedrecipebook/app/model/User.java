@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
     private int usrID;
-    // TODO: See schema
+    private String username;
+    private String password = null;
+    private int age;
+    private String occupation;
 }

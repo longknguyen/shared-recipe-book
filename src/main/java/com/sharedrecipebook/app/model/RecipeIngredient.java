@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RecipeIngredient {
-    // TODO;
     private int recId;
+    private String ingredient;
 }

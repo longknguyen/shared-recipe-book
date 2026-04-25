@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Solid {
     private int recId;
+    private int cookTime;
 }

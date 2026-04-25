@@ -14,7 +14,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) throws Exception {
-        return null;
+        return userService.getUser(id);
     }
 
     @PostMapping("/register")
@@ -24,7 +24,18 @@ public class UserController {
 
     @PostMapping("/login")
     public User login(@RequestBody User user) throws Exception {
-        // TODO;
-        return null;
+        return userService.login(user.getUsername(), user.getPassword());
+    }
+
+    public void changePassword(@RequestBody int id, String oldPassword, String newPassword) throws Exception {
+        userService.changePassword(id, oldPassword, newPassword);
+    }
+
+    public void editInfo(@RequestBody User user) throws Exception {
+        userService.editUserInfo(user);
+    }
+
+    public void deleteAccount(@RequestBody int id, String password) throws Exception {
+        userService.deleteUser(id, password);
     }
 }

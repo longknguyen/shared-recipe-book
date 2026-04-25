@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SavedIn {
-    // TODO
     private int recId;
+    private int usrId;
+    private String collName;
 }
