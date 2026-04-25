@@ -26,12 +26,12 @@ export default function LoginContainer(){
                     </h3>
                     <form className=" w-full flex justify-center mt-5 text-black dark:text-white ">
                         <div className={" w-1/2 space-y-4 "}>
-                            <input type="text" placeholder="username"
-                                   className="w-full py-2 pl-3 pr-3  text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100"/>
-                            <input type="password" placeholder="password"
-                                   className="w-full py-2 pl-3 pr-3  text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100 "/>
-                            <button type="submit" className=" w-full py-2 pl-3 pr-3 bg-[#F1524A] rounded-full text-white hover:bg-[#D4524D] text-lg ">
-                                Log in
+                            <input type="text" placeholder="Username"
+                                   className="w-full py-2 pl-3 pr-3  text-lg border rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100"/>
+                            <input type="password" placeholder="Password"
+                                   className="w-full py-2 pl-3 pr-3  text-lg border rounded-2xl focus:outline-none focus:ring-1 focus:ring-[#F1524A] bg-slate-100"/>
+                            <button type="submit" className=" w-full m py-2 pl-3 pr-3 bg-[#F1524A] rounded-2xl text-white hover:bg-[#940a0a] text-lg ">
+                            Log in
                             </button>
                         </div>
                     </form>

@@ -2,9 +2,10 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Register from "./pages/SignUp.jsx";
 
+
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
-
+const CompleteProfile = lazy(()=> import("./pages/completeProfile.jsx"));
 function App() {
     return (
         <Suspense fallback={<Loading/>}>
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/completeprofile" element={<CompleteProfile/> }/>
             </Routes>
         </Suspense>
 

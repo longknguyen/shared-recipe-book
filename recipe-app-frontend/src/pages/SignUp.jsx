@@ -6,6 +6,7 @@ export default function Register() {
             <div className="">
                 <SignupContainer></SignupContainer>
             </div>
+
         </div>
     );
 }
