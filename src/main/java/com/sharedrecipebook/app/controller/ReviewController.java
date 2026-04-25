@@ -19,6 +19,7 @@ public class ReviewController {
         reviewService.addReview(review);
     }
 
+    @PutMapping
     public void editReview(@RequestBody Review review) throws Exception {
         reviewService.editReview(review);
     }
@@ -28,11 +29,13 @@ public class ReviewController {
         return reviewService.getReviewsByRecipe(recId);
     }
 
-    public List<Review> getReviewsByUser(int usrId) throws Exception {
+    @GetMapping("/user/{usrId}")
+    public List<Review> getReviewsByUser(@PathVariable int usrId) throws Exception {
         return reviewService.getReviewsByUser(usrId);
     }
 
-    public void deleteReview(Review review) throws Exception {
+    @DeleteMapping
+    public void deleteReview(@RequestBody Review review) throws Exception {
         reviewService.deleteReview(review);
     }
 }

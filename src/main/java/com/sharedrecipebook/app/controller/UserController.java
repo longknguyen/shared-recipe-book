@@ -27,15 +27,49 @@ public class UserController {
         return userService.login(user.getUsername(), user.getPassword());
     }
 
-    public void changePassword(@RequestBody int id, String oldPassword, String newPassword) throws Exception {
-        userService.changePassword(id, oldPassword, newPassword);
+    @PutMapping("/password")
+    public void changePassword(@RequestBody ChangePasswordRequest request) throws Exception {
+        userService.changePassword(request.getId(), request.getOldPassword(), request.getNewPassword());
     }
 
+    @PutMapping
     public void editInfo(@RequestBody User user) throws Exception {
         userService.editUserInfo(user);
     }
 
-    public void deleteAccount(@RequestBody int id, String password) throws Exception {
-        userService.deleteUser(id, password);
+    @DeleteMapping
+    public void deleteAccount(@RequestBody DeleteAccountRequest request) throws Exception {
+        userService.deleteUser(request.getId(), request.getPassword());
+    }
+
+    private static class ChangePasswordRequest {
+        private int id;
+        private String oldPassword;
+        private String newPassword;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getOldPassword() {
+            return oldPassword;
+        }
+
+        public String getNewPassword() {
+            return newPassword;
+        }
+    }
+
+    private static class DeleteAccountRequest {
+        private int id;
+        private String password;
+
+        public int getId() {
+            return id;
+        }
+
+        public String getPassword() {
+            return password;
+        }
     }
 }
