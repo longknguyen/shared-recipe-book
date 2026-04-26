@@ -33,12 +33,7 @@ public class RecipeDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 List<Recipe> out = new ArrayList<>();
                 while (rs.next()) {
-                    out.add(Recipe.builder()
-                            .recID(rs.getInt("rec_id"))
-                            .prepTime(rs.getInt("prep_time"))
-                            .dishName(rs.getString("dish_name"))
-                            .directions(rs.getString("direction"))
-                            .build());
+                    out.add(mapRecipe(rs));
                 }
                 return out;
             }
@@ -63,12 +58,7 @@ public class RecipeDAO {
              ResultSet rs = ps.executeQuery()) {
             List<Recipe> out = new ArrayList<>();
             while (rs.next()) {
-                out.add(Recipe.builder()
-                        .recID(rs.getInt("rec_id"))
-                        .prepTime(rs.getInt("prep_time"))
-                        .dishName(rs.getString("dish_name"))
-                        .directions(rs.getString("direction"))
-                        .build());
+                out.add(mapRecipe(rs));
             }
             return out;
         }
@@ -87,12 +77,7 @@ public class RecipeDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 List<Recipe> out = new ArrayList<>();
                 while (rs.next()) {
-                    out.add(Recipe.builder()
-                            .recID(rs.getInt("rec_id"))
-                            .prepTime(rs.getInt("prep_time"))
-                            .dishName(rs.getString("dish_name"))
-                            .directions(rs.getString("direction"))
-                            .build());
+                    out.add(mapRecipe(rs));
                 }
                 return out;
             }
@@ -112,15 +97,204 @@ public class RecipeDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 List<Recipe> out = new ArrayList<>();
                 while (rs.next()) {
-                    out.add(Recipe.builder()
-                            .recID(rs.getInt("rec_id"))
-                            .prepTime(rs.getInt("prep_time"))
-                            .dishName(rs.getString("dish_name"))
-                            .directions(rs.getString("direction"))
-                            .build());
+                    out.add(mapRecipe(rs));
                 }
                 return out;
             }
         }
+    }
+
+    public List<Recipe> getRecipesInCollection(int usrId, String collName) throws SQLException {
+        String sql = """
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                JOIN saved_in s ON s.rec_id = r.rec_id
+                WHERE s.usr_id = ? AND s.coll_name = ?
+                ORDER BY r.dish_name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, usrId);
+            ps.setString(2, collName);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(mapRecipe(rs));
+                }
+                return out;
+            }
+        }
+    }
+
+    public List<Recipe> getRecipesWithoutAllergen(String allergenName) throws SQLException {
+        String sql = """
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                WHERE r.rec_id NOT IN (
+                    SELECT c.rec_id
+                    FROM contains c
+                    JOIN allergen a ON a.all_id = c.all_id
+                    WHERE a.name = ?
+                )
+                ORDER BY r.dish_name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, allergenName);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(mapRecipe(rs));
+                }
+                return out;
+            }
+        }
+    }
+
+    public List<String> getAllergensInRecipe(int recId) throws SQLException {
+        String sql = """
+                SELECT a.name
+                FROM contains c
+                JOIN allergen a ON a.all_id = c.all_id
+                WHERE c.rec_id = ?
+                ORDER BY a.name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, recId);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(rs.getString("name"));
+                }
+                return out;
+            }
+        }
+    }
+
+    public List<Recipe> getAlcoholicDrinks() throws SQLException {
+        String sql = """
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                JOIN drink d ON d.rec_id = r.rec_id
+                WHERE d.alc_perc > 0
+                ORDER BY r.dish_name
+                """;
+        return runRecipeListQuery(sql);
+    }
+
+    public List<Recipe> getSolidsByMinCookTime(int minCookTime) throws SQLException {
+        String sql = """
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                JOIN solids s ON s.rec_id = r.rec_id
+                WHERE s.cook_time > ?
+                ORDER BY r.dish_name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, minCookTime);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(mapRecipe(rs));
+                }
+                return out;
+            }
+        }
+    }
+
+    public List<Recipe> getRecipesByMaxPrepTime(int maxPrepTime) throws SQLException {
+        String sql = """
+                SELECT rec_id, prep_time, dish_name, direction
+                FROM recipe
+                WHERE prep_time <= ?
+                ORDER BY dish_name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, maxPrepTime);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(mapRecipe(rs));
+                }
+                return out;
+            }
+        }
+    }
+
+    public List<Recipe> getRecipesPublishedByUser(int usrId) throws SQLException {
+        String sql = """
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                FROM recipe r
+                JOIN published p ON p.rec_id = r.rec_id
+                WHERE p.usr_id = ?
+                ORDER BY r.dish_name
+                """;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, usrId);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Recipe> out = new ArrayList<>();
+                while (rs.next()) {
+                    out.add(mapRecipe(rs));
+                }
+                return out;
+            }
+        }
+    }
+
+    public void deleteRecipeCascade(int recId) throws SQLException {
+        Connection con = dataSource.getConnection();
+        try {
+            con.setAutoCommit(false);
+            String[] deleteSql = {
+                    "DELETE FROM belongs WHERE rec_id = ?",
+                    "DELETE FROM contains WHERE rec_id = ?",
+                    "DELETE FROM drink WHERE rec_id = ?",
+                    "DELETE FROM published WHERE rec_id = ?",
+                    "DELETE FROM recipe_ingredients WHERE rec_id = ?",
+                    "DELETE FROM review WHERE rec_id = ?",
+                    "DELETE FROM saved_in WHERE rec_id = ?",
+                    "DELETE FROM solids WHERE rec_id = ?",
+                    "DELETE FROM recipe WHERE rec_id = ?"
+            };
+
+            for (String sql : deleteSql) {
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, recId);
+                    ps.executeUpdate();
+                }
+            }
+            con.commit();
+        } catch (SQLException e) {
+            con.rollback();
+            throw e;
+        } finally {
+            con.setAutoCommit(true);
+            con.close();
+        }
+    }
+
+    private List<Recipe> runRecipeListQuery(String sql) throws SQLException {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            List<Recipe> out = new ArrayList<>();
+            while (rs.next()) {
+                out.add(mapRecipe(rs));
+            }
+            return out;
+        }
+    }
+
+    private Recipe mapRecipe(ResultSet rs) throws SQLException {
+        return Recipe.builder()
+                .recID(rs.getInt("rec_id"))
+                .prepTime(rs.getInt("prep_time"))
+                .dishName(rs.getString("dish_name"))
+                .directions(rs.getString("direction"))
+                .build();
     }
 }

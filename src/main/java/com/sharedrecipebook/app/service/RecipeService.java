@@ -27,4 +27,40 @@ public class RecipeService {
     public List<Recipe> getByCategory(String categoryName) throws SQLException {
         return recipeDAO.getRecipesByCategory(categoryName);
     }
+
+    public List<Recipe> getRecipesInCollection(int usrId, String collName) throws SQLException {
+        return recipeDAO.getRecipesInCollection(usrId, collName);
+    }
+
+    public List<Recipe> getRecipesWithoutAllergen(String allergenName) throws SQLException {
+        return recipeDAO.getRecipesWithoutAllergen(allergenName);
+    }
+
+    public List<String> getAllergensInRecipe(int recId) throws SQLException {
+        return recipeDAO.getAllergensInRecipe(recId);
+    }
+
+    public List<Recipe> getAlcoholicDrinks() throws SQLException {
+        return recipeDAO.getAlcoholicDrinks();
+    }
+
+    public List<Recipe> getSolidsByMinCookTime(int minCookTime) throws SQLException {
+        return recipeDAO.getSolidsByMinCookTime(minCookTime);
+    }
+
+    public List<Recipe> getRecipesByMaxPrepTime(int maxPrepTime) throws SQLException {
+        return recipeDAO.getRecipesByMaxPrepTime(maxPrepTime);
+    }
+
+    public List<Recipe> getRecipesPublishedByUser(int usrId) throws SQLException {
+        return recipeDAO.getRecipesPublishedByUser(usrId);
+    }
+
+    public void addRecipeToCollection(int recId, int usrId, String collName) throws SQLException {
+        recipeDAO.addRecipeToCollection(recId, usrId, collName);
+    }
+
+    public void deleteRecipe(int recId) throws SQLException {
+        recipeDAO.deleteRecipeCascade(recId);
+    }
 }
