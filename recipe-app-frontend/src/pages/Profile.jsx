@@ -1,107 +1,181 @@
-import {useNavigate,Link} from "react-router-dom"
-import {useEffect, useState} from "react";
-import { User,KeyRound,Balloon,BriefcaseBusiness, X} from 'lucide-react';
-export default function Profile() {
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState("");
-    useEffect(() => {
-        const currentUser = localStorage.getItem("user");
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import EmptyState from "../components/common/EmptyState.jsx";
+import LoadingState from "../components/common/LoadingState.jsx";
+import StatusBanner from "../components/common/StatusBanner.jsx";
+import AppShell from "../components/layout/AppShell.jsx";
+import ProfileOverview from "../components/profile/ProfileOverview.jsx";
+import {
+    ChangePasswordForm,
+    DeleteAccountForm,
+    EditProfileForm,
+} from "../components/profile/ProfileForms.jsx";
+import RecipeGrid from "../components/recipes/RecipeGrid.jsx";
+import ReviewList from "../components/recipes/ReviewList.jsx";
+import { getPublishedRecipes } from "../services/recipes.js";
+import { deleteAccount, changePassword, getUser, updateUser } from "../services/users.js";
+import { getUserReviews } from "../services/reviews.js";
+import { clearCurrentUser, getCurrentUser, setCurrentUser } from "../utils/auth.js";
 
-        if(!currentUser){
-            setError("User not found!");
+export default function Profile() {
+    const cachedUser = getCurrentUser();
+    const [user, setUser] = useState(cachedUser);
+    const [publishedRecipes, setPublishedRecipes] = useState([]);
+    const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(Boolean(cachedUser));
+    const [status, setStatus] = useState({ tone: "info", message: "" });
+    const [savingProfile, setSavingProfile] = useState(false);
+    const [savingPassword, setSavingPassword] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const loadProfile = async () => {
+        if (!cachedUser) {
+            setLoading(false);
             return;
         }
-        if(currentUser)
-        {
-            try{
-                setUser(JSON.parse(currentUser));
-            }
-            catch (e)
-            {
 
-                console.log("Data not stored");
-                setError("Data got lost!")
-                localStorage.removeItem("user");
-            }
+        try {
+            setLoading(true);
+            const [freshUser, publishedData, reviewData] = await Promise.all([
+                getUser(cachedUser.usrID),
+                getPublishedRecipes(cachedUser.usrID),
+                getUserReviews(cachedUser.usrID),
+            ]);
+
+            setUser(freshUser);
+            setCurrentUser(freshUser);
+            setPublishedRecipes(publishedData);
+            setReviews(reviewData);
+        } catch (error) {
+            setStatus({ tone: "danger", message: error.message });
+        } finally {
+            setLoading(false);
         }
+    };
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => {
+            void loadProfile();
+        }, 0);
+
+        return () => window.clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if(error){
-        return <p>{error}</p>
+    const handleSaveProfile = async (payload) => {
+        try {
+            setSavingProfile(true);
+            await updateUser(payload);
+            setStatus({ tone: "success", message: "Profile details updated." });
+            await loadProfile();
+        } catch (error) {
+            setStatus({ tone: "danger", message: error.message });
+        } finally {
+            setSavingProfile(false);
+        }
+    };
+
+    const handleChangePassword = async (payload) => {
+        try {
+            setSavingPassword(true);
+            await changePassword(payload);
+            setStatus({ tone: "success", message: "Password updated." });
+        } catch (error) {
+            setStatus({ tone: "danger", message: error.message });
+        } finally {
+            setSavingPassword(false);
+        }
+    };
+
+    const handleDelete = async (payload) => {
+        try {
+            setDeleting(true);
+            await deleteAccount(payload);
+            clearCurrentUser();
+            window.location.href = "/";
+        } catch (error) {
+            setStatus({ tone: "danger", message: error.message });
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    if (!cachedUser) {
+        return (
+            <AppShell accent="soft">
+                <EmptyState
+                    title="You need to log in first"
+                    description="The profile page loads user details, published recipes, and reviews from your stored account."
+                    action={
+                        <Link
+                            to="/login"
+                            className="rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-brand-600"
+                        >
+                            Go to login
+                        </Link>
+                    }
+                />
+            </AppShell>
+        );
     }
-    if(!error && !user){
-        return <p>Loading....</p>
+
+    if (loading || !user) {
+        return (
+            <AppShell accent="soft">
+                <LoadingState label="Loading profile" />
+            </AppShell>
+        );
     }
-    return(
-        <div className="flex flex-row w-full h-screen overflow-hidden bg-slate-50 bg-cover ">
-            <div className="flex flex-col bg-slate-50 w-[380px] border-r-[1px] border-grey-500 mt-3 mb-3">
-                <h2 className=" ml-4 text-2xl text-gray-600">Explore</h2>
-                <hr className="mt-3 pl-3 pr-3 mr-3 ml-3 border-grey-500"></hr>
-                <div className="flex flex-col space-y-4 ml-5 mt-4 gap-2">
-                    <ul className=" w-full">
-                    <li className="cursor-pointer hover:bg-slate-100 text-lg hover:text-black mr-3 pl-2 pb-1 pt-1 rounded-sm hover:shadow-2xl">Manage recipes</li>
-                    </ul>
-                </div>
-            </div>
 
-
-            <div className="flex flex-col bg-slate-50 mt-3 mb-3 w-full min-h-screen">
-                <div className="flex justify-between">
-                    <h2 className=" ml-4 text-2xl text-gray-600 ">Manage My Account</h2>
-                    <Link to="/"><X className="cursor-pointer text-black mr-5 hover:text-red-600"/>
-                    </Link>
-                </div>
-                <hr className="mt-3 pl-3 pr-3 mr-3 ml-3 border-grey-500"></hr>
-                <div className="flex flex-1 justify-center items-center text-black">
-                    <div className=" flex flex-col  w-[650px] bg-white p-10 space-y-8 rounded-2xl shadow-xl">
-                        <div>
-                            <div className="flex flex-row gap-2 ">
-                                <p><User/></p>
-                                <div className="flex flex-col">
-                                    <p>Username</p>
-                                    <p>{user?.username}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="flex flex-row gap-2 ">
-                                <p><KeyRound/></p>
-                                <div className="flex flex-col w-full">
-                                    <p>Password</p>
-                                    <div className="flex flex-row justify-between items-center w-full">
-                                        <p className="">******</p>
-                                        <button type="submit" className="gap-1 items-center pl-5 pr-5 pt-1 pb-1 bg-red-400 text-white rounded-md alig hover:bg-red-600">
-                                            Edit
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="flex flex-row gap-2 ">
-                                <p><Balloon/></p>
-                                <div className="flex flex-col">
-                                    <p>Age</p>
-                                    <p>{user?.age}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="flex flex-row gap-2 ">
-                                <p><BriefcaseBusiness/></p>
-                                <div className="flex flex-col">
-                                    <p>Occupation</p>
-                                    <p>{user?.occupation}</p>
-                                </div>
-                            </div>
-                        </div>
-
+    return (
+        <AppShell accent="soft">
+            <div className="space-y-6">
+                <div className="animate-fade-up rounded-[32px] border border-white/70 bg-white/80 p-6 shadow-soft">
+                    <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Account center</p>
+                    <h1 className="mt-2 text-4xl font-semibold tracking-tight text-brand-950">Manage your profile</h1>
+                    <p className="mt-3 max-w-3xl text-sm leading-7 text-brand-700">
+                        Update your details, keep your account secure, and look back at the recipes and reviews tied to your profile.
+                    </p>
+                    <div className="mt-5">
+                        <StatusBanner tone={status.tone} message={status.message} />
                     </div>
                 </div>
+
+                <ProfileOverview user={user} />
+
+                <section className="grid gap-6 xl:grid-cols-3">
+                    <EditProfileForm user={user} onSave={handleSaveProfile} saving={savingProfile} />
+                    <ChangePasswordForm user={user} onSave={handleChangePassword} saving={savingPassword} />
+                    <DeleteAccountForm user={user} onDelete={handleDelete} deleting={deleting} />
+                </section>
+
+                <section className="space-y-5">
+                    <div className="animate-fade-up">
+                        <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Published recipes</p>
+                        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-brand-950">Recipes you published</h2>
+                    </div>
+                    <RecipeGrid
+                        recipes={publishedRecipes}
+                        emptyTitle="No published recipes found"
+                        emptyDescription="You haven't published any recipes yet."
+                        badgeResolver={() => "Published"}
+                    />
+                </section>
+
+                <section className="space-y-5">
+                    <div className="animate-fade-up">
+                        <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Your reviews</p>
+                        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-brand-950">Recent feedback you left</h2>
+                    </div>
+                    <ReviewList
+                        reviews={reviews}
+                        currentUser={user}
+                        onEdit={() => {}}
+                        onDelete={() => {}}
+                        showOwnerActions={false}
+                    />
+                </section>
             </div>
-        </div>
-    )
+        </AppShell>
+    );
 }

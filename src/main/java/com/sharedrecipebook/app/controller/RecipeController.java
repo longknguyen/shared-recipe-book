@@ -2,6 +2,7 @@ package com.sharedrecipebook.app.controller;
 
 import com.sharedrecipebook.app.model.Recipe;
 import com.sharedrecipebook.app.service.RecipeService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,21 +75,10 @@ public class RecipeController {
         recipeService.deleteRecipe(recId);
     }
 
+    @Getter
     private static class AddToCollectionRequest {
         private int recId;
         private int usrId;
         private String collName;
-
-        public int getRecId() {
-            return recId;
-        }
-
-        public int getUsrId() {
-            return usrId;
-        }
-
-        public String getCollName() {
-            return collName;
-        }
     }
 }

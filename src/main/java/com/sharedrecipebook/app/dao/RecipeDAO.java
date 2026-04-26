@@ -19,7 +19,7 @@ public class RecipeDAO {
 
     public List<Recipe> getRecipesByCategory(String categoryName) throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN belongs b ON b.rec_id = r.rec_id
                 JOIN category c ON c.cat_id = b.cat_id
@@ -52,7 +52,7 @@ public class RecipeDAO {
     }
 
     public List<Recipe> getAllRecipes() throws SQLException {
-        String sql = "SELECT rec_id, prep_time, dish_name, direction FROM recipe ORDER BY dish_name";
+        String sql = "SELECT rec_id, prep_time, dish_name, directions FROM recipe ORDER BY dish_name";
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -66,7 +66,7 @@ public class RecipeDAO {
 
     public List<Recipe> searchByDishName(String query) throws SQLException {
         String sql = """
-                SELECT rec_id, prep_time, dish_name, direction
+                SELECT rec_id, prep_time, dish_name, directions
                 FROM recipe
                 WHERE dish_name LIKE ?
                 ORDER BY dish_name
@@ -86,7 +86,7 @@ public class RecipeDAO {
 
     public List<Recipe> getReviewsByRecipe(int recID) throws SQLException {
         String sql = """
-                SELECT DISTINCT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT DISTINCT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN review rv ON rv.rec_id = r.rec_id
                 WHERE r.rec_id = ?
@@ -106,7 +106,7 @@ public class RecipeDAO {
 
     public List<Recipe> getRecipesInCollection(int usrId, String collName) throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN saved_in s ON s.rec_id = r.rec_id
                 WHERE s.usr_id = ? AND s.coll_name = ?
@@ -128,7 +128,7 @@ public class RecipeDAO {
 
     public List<Recipe> getRecipesWithoutAllergen(String allergenName) throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 WHERE r.rec_id NOT IN (
                     SELECT c.rec_id
@@ -174,7 +174,7 @@ public class RecipeDAO {
 
     public List<Recipe> getAlcoholicDrinks() throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN drink d ON d.rec_id = r.rec_id
                 WHERE d.alc_perc > 0
@@ -185,7 +185,7 @@ public class RecipeDAO {
 
     public List<Recipe> getSolidsByMinCookTime(int minCookTime) throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN solids s ON s.rec_id = r.rec_id
                 WHERE s.cook_time > ?
@@ -206,7 +206,7 @@ public class RecipeDAO {
 
     public List<Recipe> getRecipesByMaxPrepTime(int maxPrepTime) throws SQLException {
         String sql = """
-                SELECT rec_id, prep_time, dish_name, direction
+                SELECT rec_id, prep_time, dish_name, directions
                 FROM recipe
                 WHERE prep_time <= ?
                 ORDER BY dish_name
@@ -226,7 +226,7 @@ public class RecipeDAO {
 
     public List<Recipe> getRecipesPublishedByUser(int usrId) throws SQLException {
         String sql = """
-                SELECT r.rec_id, r.prep_time, r.dish_name, r.direction
+                SELECT r.rec_id, r.prep_time, r.dish_name, r.directions
                 FROM recipe r
                 JOIN published p ON p.rec_id = r.rec_id
                 WHERE p.usr_id = ?
@@ -294,7 +294,7 @@ public class RecipeDAO {
                 .recID(rs.getInt("rec_id"))
                 .prepTime(rs.getInt("prep_time"))
                 .dishName(rs.getString("dish_name"))
-                .directions(rs.getString("direction"))
+                .directions(rs.getString("directions"))
                 .build();
     }
 }
