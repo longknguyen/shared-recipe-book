@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Register from "./pages/SignUp.jsx";
+import Profile from "./pages/Profile.jsx";
 
 
 const Home = lazy(() => import("./pages/Home"));
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/completeprofile" element={<CompleteProfile/> }/>
+                <Route path="/profile" element={<Profile /> }/>
             </Routes>
         </Suspense>
 
