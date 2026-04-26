@@ -2,6 +2,7 @@ package com.sharedrecipebook.app.controller;
 
 import com.sharedrecipebook.app.model.User;
 import com.sharedrecipebook.app.service.UserService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,35 +45,17 @@ public class UserController {
         userService.deleteUser(request.getId(), request.getPassword());
     }
 
+    @Getter
     private static class ChangePasswordRequest {
         private int id;
         private String oldPassword;
         private String newPassword;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getOldPassword() {
-            return oldPassword;
-        }
-
-        public String getNewPassword() {
-            return newPassword;
-        }
     }
 
+    @Getter
     private static class DeleteAccountRequest {
         private int id;
         private String password;
-
-        public int getId() {
-            return id;
-        }
-
-        public String getPassword() {
-            return password;
-        }
     }
 
 

@@ -1,52 +1,72 @@
-import Navbar from "../components/home/Navbar.jsx";
-import {useNavigate} from "react-router-dom"
-import {useState} from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AppShell from "../components/layout/AppShell.jsx";
+import FeatureStrip from "../components/home/FeatureStrip.jsx";
+import HeroSearch from "../components/home/HeroSearch.jsx";
 
 export default function Home() {
     const [query, setQuery] = useState("");
     const navigate = useNavigate();
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!query.trim()) return;
-        navigate(`/recipes?query=${encodeURIComponent(query)}`);
+    const handleSearch = (event) => {
+        event.preventDefault();
+
+        if (!query.trim()) {
+            navigate("/recipes");
+            return;
+        }
+
+        navigate(`/recipes?query=${encodeURIComponent(query.trim())}`);
     };
 
-    return(
-        <>
-            <div className={"relative w-full h-screen overflow-hidden bg-[url('./assets/home/background.png')] bg-cover bg-no-repeat"}>
-                <Navbar></Navbar>
-                <div className={"absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"}>
-                    <div className={"text-5xl font-semibold"}>
-                        <div className={"mb-1"}>
-                            <span className={"text-black"}>Simple </span>
-                            <span className={"text-[#F1524A]"}>Recipes </span>
-                            <span className={"text-black"}>for</span></div>
-                        <div className={"mb-4"}>
-                            <span className={"text-[#F1524A]"}>Incredible </span>
-                            <span className={"text-black"}>Deliciousness</span>
-                        </div>
+    return (
+        <AppShell accent="warm">
+            <section className="grid items-center gap-8 pb-10 pt-4 lg:grid-cols-[1.1fr_0.9fr]">
+                <div className="animate-fade-up">
+                    <p className="text-sm uppercase tracking-[0.35em] text-brand-500">Shared Recipe Book</p>
+                    <h1 className="mt-5 max-w-3xl font-display text-5xl leading-tight text-brand-950 md:text-7xl">
+                        Search, save and revisit recipes through one connected kitchen workspace.
+                    </h1>
+                    <p className="mt-6 max-w-2xl text-base leading-8 text-brand-700">
+                        Discover ideas faster, keep your favourite dishes organised and move through a calmer cooking flow with
+                        collections, reviews and your personal profile.
+                    </p>
+                    <div className="mt-8 flex flex-wrap gap-4">
+                        <Link
+                            to="/recipes"
+                            className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+                        >
+                            Browse recipes
+                        </Link>
+                        <Link
+                            to="/collections"
+                            className="rounded-full border border-brand-300 px-6 py-3 text-sm font-semibold text-brand-800 transition duration-300 hover:border-brand-500 hover:bg-brand-100"
+                        >
+                            Open collections
+                        </Link>
                     </div>
-                    <div className={"mb-4"}>
-                        <span className={"text-black max-w-xs"}>
-                            Discover easy ways to create special dishes with our simple recipes.
-                            Enjoy extraordinary deliciousness in every dish you make.</span>
-                    </div>
-
-                    <form onSubmit={handleSearch} className="flex items-center justify-center text-black dark:text-white">
-                        <div className={"relative w-full"}>
-                            <input type="search"
-                                   value={query}
-                                   onChange={(e) => setQuery(e.target.value)}
-                                   placeholder="Search for your favourite recipes..."
-                                   className="w-full py-4 pl-4 pr-32 text-lg border rounded-full focus:outline-none focus:ring-1 focus:ring-[#F1524A]"
-                            />
-                            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-2 bg-[#F1524A] rounded-full text-white hover:bg-[#D4524D] transition">
-                                Search</button>
-                        </div>
-                    </form>
                 </div>
-            </div>
-        </>
+
+                <div className="animate-fade-in rounded-[40px] border border-white/70 bg-white/80 p-6 shadow-soft backdrop-blur md:p-8">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="rounded-[28px] bg-brand-950 p-6 text-white">
+                            <p className="text-sm uppercase tracking-[0.3em] text-white/60">Discover</p>
+                            <h2 className="mt-4 text-3xl font-semibold">Smart recipe search</h2>
+                            <p className="mt-3 text-sm leading-7 text-white/80">Jump from the landing page straight into filtered results and find something good quickly.</p>
+                        </div>
+                        <div className="rounded-[28px] bg-brand-sand p-6 text-brand-950">
+                            <p className="text-sm uppercase tracking-[0.3em] text-brand-600">Personal space</p>
+                            <h2 className="mt-4 text-3xl font-semibold">Collections</h2>
+                            <p className="mt-3 text-sm leading-7 text-brand-800">Organise favourites into thoughtful shelves for weeknights, parties and comfort meals.</p>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <HeroSearch query={query} onChange={(event) => setQuery(event.target.value)} onSubmit={handleSearch} />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <FeatureStrip />
+        </AppShell>
     );
 }
