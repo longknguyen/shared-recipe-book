@@ -83,7 +83,7 @@ public class UserDAO {
             String sql = "UPDATE users SET pw = ? WHERE usr_id = ?";
             try (Connection conn = dataSource.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1,newPassword);
+                ps.setString(1, PasswordUtil.hashPassword(newPassword));
                 ps.setInt(2,usrId);
                 ps.executeUpdate();
             }
@@ -93,7 +93,7 @@ public class UserDAO {
     }
 
     public void editUserInfo(User user) throws SQLException {
-        String sql = "UPDATE users SET age = ?, occupation = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET age = ?, occupation = ? WHERE usr_id = ?";
         try (Connection conn = dataSource.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1,user.getAge());
