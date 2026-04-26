@@ -5,6 +5,8 @@ import com.sharedrecipebook.app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+
 @Service
 public class UserService {
     @Autowired
@@ -13,9 +15,17 @@ public class UserService {
     public void registerUser(User user) throws Exception {
         // ensure password is secure
         if (user.getPassword().length() <= 6 || user.getPassword().equals(user.getUsername())){
-            throw new Exception("Password must be at least 6 characters and not the same as your username.");
+            throw new RuntimeException("Password must be at least 6 characters and not the same as your username.");
         }
+        try{
         userDAO.createUser(user);
+        }catch (SQLException e){
+            throw new RuntimeException("Username is taken!");
+        }
+    }
+
+    public boolean usernameExists(String username) throws SQLException {
+        return userDAO.getUsrIdFromUsername(username) != -1;
     }
 
     public User login(String username, String password) throws Exception {

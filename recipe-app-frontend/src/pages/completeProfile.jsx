@@ -19,9 +19,14 @@ export default function CompleteProfile() {
         }
 
         if(!age ||!occupation){
-            setErrorMessage("Please select age and occupation to finish the setup!");
+            setErrorMessage("Please select age and occupation to complete the setup");
             return;
         }
+
+        console.log("TEMP USER:", tempUser);
+        console.log("AGE:", age);
+        console.log("OCCUPATION:", occupation);
+
         try {
             const response = await fetch("http://localhost:8080/api/users/register",
                 {
@@ -37,26 +42,26 @@ export default function CompleteProfile() {
                     })
                 });
             if (response.ok) {
-                const user = await response.json();
+                const user = {username: tempUser.username, age: Number(age), occupation: occupation}
                 localStorage.removeItem("temp_user")
                 localStorage.setItem("user",JSON.stringify(user))
                 navigate("/profile");
             } else {
-                alert("Failed operation!")
+                const msg = await response.text()
+                setErrorMessage(msg);
             }
         } catch (error) {
             setErrorMessage("Site not working!");
         }
     };
 
-
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-200 ">
-            <div
-                className="relative w-full max-w-3xl h-[600px] bg-slate-100 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+            <div className="relative w-full max-w-3xl h-[600px] bg-slate-100 rounded-2xl shadow-xl overflow-hidden flex flex-col">
                 <h2 className="text-4xl font-semibold mt-6 text-black text-center">Complete Profile</h2>
 
-                <div className="flex flex-1 items-center justify-center">
+                <div className="relative flex flex-col flex-1 items-center justify-center">
+
                     <form onSubmit={submitHandle} className="flex flex-row gap-6">
                         <div className="w-72 text-center">
                             <label className="block text-2xl font-medium text-black mb-4">Age</label>
@@ -81,10 +86,11 @@ export default function CompleteProfile() {
                             </select>
                         </div>
                         <button type="submit"
-                                className=" py-2 pl-3 pr-3 bg-[#F1524A] rounded-xl text-white hover:bg-[#940a0a] text-lg shadow-xl">
+                                className="absolute bottom-4 right-4 py-2 pl-3 pr-3 bg-[#F1524A] rounded-xl text-white hover:bg-[#940a0a] text-lg shadow-xl">
                             Continue
                         </button>
                     </form>
+                    {errorMessage && <p className="text-red-600  text-sm text-center mt-5">{errorMessage}</p>}
 
                 </div>
 

@@ -1,6 +1,6 @@
 import { Link,useNavigate } from "react-router-dom";
 import {useState} from "react";
-import {useForm} from "react-hook-form";
+import {set, useForm} from "react-hook-form";
 
 export default function LoginContainer(){
 
@@ -11,6 +11,7 @@ export default function LoginContainer(){
     const onSubmit = async ( data ) =>
     {
         console.log("FORM SUBMITTED", data);
+
         try{
             const response = await fetch("http://localhost:8080/api/users/login",{
                 method: "POST",
@@ -19,20 +20,17 @@ export default function LoginContainer(){
                 },
                 body: JSON.stringify({username: data.username, password: data.password})
             });
-
+            console.log("Login status:",response.ok, response.status);
             if(!response.ok)
             {
-                const errormsg = await response.text();
-                setErrorMessage(errormsg)
+                setErrorMessage("Invalid username or password. Please try again!")
                 return;
             }
-            else
-            {
-                const user = await response.json();
-                localStorage.setItem("user", JSON.stringify(user))
-                setErrorMessage("");
-                navigate("/profile");
-            }
+
+            const user = await response.json();
+            localStorage.setItem("user", JSON.stringify(user))
+            setErrorMessage("");
+            navigate("/profile");
         }
         catch (err){
             setErrorMessage("Site not working!");
@@ -74,7 +72,7 @@ export default function LoginContainer(){
                             <button type="submit" className=" w-full m py-2 pl-3 pr-3 bg-[#F1524A] rounded-2xl text-white hover:bg-[#940a0a] text-lg ">
                             Log in
                             </button>
-
+                            {errorMessage && <p className="text-red-600 text-sm text-center">{errorMessage}</p>}
                             <span className="text-center text-sm text-gray-600 "> Dont have an account? &nbsp;
                                 <Link to="/register" className="text-gray-800 font-bold hover:underline text-sm">Sign Up</Link>
                             </span>

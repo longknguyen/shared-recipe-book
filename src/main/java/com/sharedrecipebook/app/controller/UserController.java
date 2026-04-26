@@ -5,6 +5,8 @@ import com.sharedrecipebook.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -71,5 +73,11 @@ public class UserController {
         public String getPassword() {
             return password;
         }
+    }
+
+
+    @GetMapping("/exist/{username}")
+    public boolean usernameExists(@PathVariable String username) throws SQLException {
+        return userService.usernameExists(username);
     }
 }
