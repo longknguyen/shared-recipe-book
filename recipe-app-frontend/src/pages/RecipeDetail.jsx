@@ -9,7 +9,7 @@ import ReviewComposer from "../components/recipes/ReviewComposer.jsx";
 import ReviewList from "../components/recipes/ReviewList.jsx";
 import { getCollections } from "../services/collections.js";
 import { addReview, deleteReview, getRecipeReviews, updateReview } from "../services/reviews.js";
-import {addRecipeToCollection, getAllRecipes, getRecipeAllergens, getRecipeIngredients} from "../services/recipes.js";
+import { addRecipeToCollection, getAllRecipes, getRecipeAllergens } from "../services/recipes.js";
 import { getCurrentUser } from "../utils/auth.js";
 import { formatMinutes } from "../utils/formatters.js";
 
@@ -19,7 +19,6 @@ export default function RecipeDetail() {
     const [recipe, setRecipe] = useState(null);
     const [allergens, setAllergens] = useState([]);
     const [reviews, setReviews] = useState([]);
-    const [ingredients, setIngredients] = useState(null);
     const [collections, setCollections] = useState([]);
     const [selectedCollection, setSelectedCollection] = useState("");
     const [editingReview, setEditingReview] = useState(null);
@@ -32,18 +31,16 @@ export default function RecipeDetail() {
         try {
             setLoading(true);
             setStatus({ tone: "info", message: "" });
-            const [allRecipes, allergenData, reviewData, ingredientData] = await Promise.all([
+            const [allRecipes, allergenData, reviewData] = await Promise.all([
                 getAllRecipes(),
                 getRecipeAllergens(recipeId),
                 getRecipeReviews(recipeId),
-                getRecipeIngredients(recipeId),
             ]);
 
             const matched = allRecipes.find((item) => String(item.recID) === String(recipeId));
             setRecipe(matched || null);
             setAllergens(allergenData);
             setReviews(reviewData);
-            setIngredients(ingredientData.join(", "));
 
             if (currentUser) {
                 const collectionData = await getCollections(currentUser.usrID);
@@ -158,8 +155,7 @@ export default function RecipeDetail() {
             ) : (
                 <div className="space-y-6">
                     <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                        <article
-                            className="animate-fade-up rounded-[34px] border border-white/70 bg-white/80 p-8 shadow-soft">
+                        <article className="animate-fade-up rounded-[34px] border border-white/70 bg-white/80 p-8 shadow-soft">
                             <div className="flex flex-wrap items-start justify-between gap-4">
                                 <div>
                                     <p className="text-sm uppercase tracking-[0.35em] text-brand-500">Recipe detail</p>
@@ -171,21 +167,16 @@ export default function RecipeDetail() {
                             </div>
 
                             <div className="mt-6 flex flex-wrap gap-3">
-                                <div
-                                    className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm text-brand-700">
-                                    <Clock3 className="h-4 w-4"/>
+                                <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm text-brand-700">
+                                    <Clock3 className="h-4 w-4" />
                                     Prep time: {formatMinutes(recipe.prepTime)}
                                 </div>
-                                <div
-                                    className="inline-flex items-center gap-2 rounded-full bg-brand-sand px-4 py-2 text-sm text-brand-900">
-                                    <ShieldAlert className="h-4 w-4"/>
+                                <div className="inline-flex items-center gap-2 rounded-full bg-brand-sand px-4 py-2 text-sm text-brand-900">
+                                    <ShieldAlert className="h-4 w-4" />
                                     {allergens.length ? `${allergens.length} allergen tags` : "No allergen tags"}
                                 </div>
                             </div>
-                            <div className="mt-8 rounded-[28px] bg-brand-50 p-6">
-                                <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Ingredients</p>
-                                <p className="mt-4 whitespace-pre-line text-sm leading-8 text-brand-800">{ingredients}</p>
-                            </div>
+
                             <div className="mt-8 rounded-[28px] bg-brand-50 p-6">
                                 <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Directions</p>
                                 <p className="mt-4 whitespace-pre-line text-sm leading-8 text-brand-800">{recipe.directions}</p>
@@ -193,15 +184,14 @@ export default function RecipeDetail() {
                         </article>
 
                         <aside className="space-y-6">
-                            <section
-                                className="animate-fade-up rounded-[34px] border border-white/70 bg-white/80 p-6 shadow-soft">
+                            <section className="animate-fade-up rounded-[34px] border border-white/70 bg-white/80 p-6 shadow-soft">
                                 <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Allergens</p>
                                 <div className="mt-4 flex flex-wrap gap-3">
                                     {allergens.length ? (
                                         allergens.map((item) => (
                                             <span key={item} className="rounded-full bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700">
-                                                {item}
-                                            </span>
+ {item}
+ </span>
                                         ))
                                     ) : (
                                         <p className="text-sm text-brand-700">No allergens were listed for this recipe.</p>

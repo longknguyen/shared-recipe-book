@@ -60,11 +60,6 @@ export async function getRecipeAllergens(recId) {
     return data;
 }
 
-export async function getRecipeIngredients(recId) {
-    const { data } = await api.get(`recipes/${recId}/ingredients`);
-    return data;
-}
-
 export async function addRecipeToCollection({ recId, usrId, collName }) {
     await api.post("/recipes/collection", { recId, usrId, collName });
 }
