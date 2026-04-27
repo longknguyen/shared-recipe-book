@@ -101,6 +101,23 @@ public class RecipeDAO {
         }
     }
 
+    public List<RecipeIngredient> getRecipeIngredients(int recId) throws SQLException {
+        String sql = "SELECT * FROM recipe_ingredients WHERE rec_id = ?";
+        List<RecipeIngredient> ingredients = new ArrayList<>();
+        try (Connection con = dataSource.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, recId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                RecipeIngredient ingredient = new RecipeIngredient();
+                ingredient.setRecId(rs.getInt("rec_id"));
+                ingredient.setIngredient(rs.getString("ingredient"));
+                ingredients.add(ingredient);
+            }
+        }
+        return ingredients;
+    }
+
     public List<Recipe> getRecipesByCategory(String categoryName) throws SQLException {
         String sql = """
                 SELECT r.rec_id, r.prep_time, r.dish_name, r.directions

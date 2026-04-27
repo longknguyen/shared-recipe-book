@@ -2,6 +2,7 @@ package com.sharedrecipebook.app.controller;
 
 import com.sharedrecipebook.app.model.Recipe;
 import com.sharedrecipebook.app.model.RecipeInfo;
+import com.sharedrecipebook.app.model.RecipeIngredient;
 import lombok.Data;
 import com.sharedrecipebook.app.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,11 @@ public class RecipeController {
     @PostMapping
     public void addRecipe(@RequestBody RecipeInfo recipeInfo) throws Exception {
         recipeService.addRecipe(recipeInfo);
+    }
+
+    @GetMapping("/{recId}/ingredients")
+    public List<RecipeIngredient> getRecipeIngredients(@PathVariable int recId) throws Exception {
+        return recipeService.getRecipeIngredients(recId);
     }
 
     @Data

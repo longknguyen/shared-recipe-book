@@ -3,6 +3,7 @@ package com.sharedrecipebook.app.service;
 import com.sharedrecipebook.app.dao.RecipeDAO;
 import com.sharedrecipebook.app.model.Recipe;
 import com.sharedrecipebook.app.model.RecipeInfo;
+import com.sharedrecipebook.app.model.RecipeIngredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +68,10 @@ public class RecipeService {
 
     public void addRecipe(RecipeInfo recipeInfo) throws SQLException {
         recipeDAO.addRecipe(recipeInfo);
+    }
+
+    public List<RecipeIngredient> getRecipeIngredients(int recId) throws SQLException {
+        return recipeDAO.getRecipeIngredients(recId);
     }
 
     public void deleteRecipe(int recId, int usrId) throws SQLException {
