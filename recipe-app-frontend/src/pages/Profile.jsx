@@ -12,7 +12,7 @@ import {
 } from "../components/profile/ProfileForms.jsx";
 import RecipeGrid from "../components/recipes/RecipeGrid.jsx";
 import ReviewList from "../components/recipes/ReviewList.jsx";
-import { getPublishedRecipes } from "../services/recipes.js";
+import { deleteRecipe, getPublishedRecipes } from "../services/recipes.js";
 import { deleteAccount, changePassword, getUser, updateUser } from "../services/users.js";
 import { getUserReviews } from "../services/reviews.js";
 import { clearCurrentUser, getCurrentUser, setCurrentUser } from "../utils/auth.js";
@@ -27,6 +27,7 @@ export default function Profile() {
     const [savingProfile, setSavingProfile] = useState(false);
     const [savingPassword, setSavingPassword] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [deletingRecipeId, setDeletingRecipeId] = useState(null);
 
     const loadProfile = async () => {
         if (!cachedUser) {
@@ -100,6 +101,19 @@ export default function Profile() {
         }
     };
 
+    const handleDeletePublishedRecipe = async (recId) => {
+        try {
+            setDeletingRecipeId(recId);
+            await deleteRecipe(recId, user.usrID);
+            setStatus({ tone: "success", message: "Published recipe deleted." });
+            await loadProfile();
+        } catch (error) {
+            setStatus({ tone: "danger", message: error.message });
+        } finally {
+            setDeletingRecipeId(null);
+        }
+    };
+
     if (!cachedUser) {
         return (
             <AppShell accent="soft">
@@ -159,6 +173,9 @@ export default function Profile() {
                         emptyTitle="No published recipes found"
                         emptyDescription="You haven't published any recipes yet."
                         badgeResolver={() => "Published"}
+                        canRemove={() => true}
+                        onRemove={handleDeletePublishedRecipe}
+                        deletingRecipeId={deletingRecipeId}
                     />
                 </section>
 

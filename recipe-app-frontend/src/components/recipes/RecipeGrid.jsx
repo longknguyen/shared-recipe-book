@@ -10,13 +10,14 @@ export default function RecipeGrid({
     onRemove,
     deletingRecipeId = null,
     canRemove,
+    gridClassName = "grid gap-5 md:grid-cols-2 xl:grid-cols-3",
 }) {
     if (!recipes.length) {
         return <EmptyState title={emptyTitle} description={emptyDescription} />;
     }
 
     return (
-        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <section className={gridClassName}>
             {recipes.map((recipe, index) => (
                 <RecipeCard
                     key={recipe.recID}

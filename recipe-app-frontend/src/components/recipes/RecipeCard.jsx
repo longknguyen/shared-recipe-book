@@ -47,14 +47,14 @@ export default function RecipeCard({
 
             <p className="mt-4 flex-1 text-sm leading-7 text-brand-700">{getRecipeSummary(recipe.directions)}</p>
 
-            <div className="mt-6 flex items-center justify-between gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                 <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-sm text-brand-700">
                     <Clock3 className="h-4 w-4" />
                     {formatMinutes(recipe.prepTime)}
                 </div>
                 <Link
                     to={`/recipes/${recipe.recID}`}
-                    className="inline-flex items-center gap-2 rounded-full border border-brand-200 px-4 py-2 text-sm font-semibold text-brand-800 transition duration-300 hover:border-brand-500 hover:bg-brand-100 hover:text-brand-950"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-brand-200 px-4 py-2 text-sm font-semibold text-brand-800 transition duration-300 hover:border-brand-500 hover:bg-brand-100 hover:text-brand-950 sm:w-auto"
                 >
                     <Eye className="h-4 w-4" />
                     Open recipe

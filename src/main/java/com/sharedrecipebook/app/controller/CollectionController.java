@@ -9,10 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/collections")
-@CrossOrigin(
-        origins = {"http://localhost:5173"},
-        originPatterns = {"https://*.netlify.app"}
-)
 public class CollectionController {
     @Autowired
     private CollectionService collectionService;

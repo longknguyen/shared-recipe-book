@@ -2,8 +2,8 @@ package com.sharedrecipebook.app.controller;
 
 import com.sharedrecipebook.app.model.Recipe;
 import com.sharedrecipebook.app.model.RecipeInfo;
+import lombok.Data;
 import com.sharedrecipebook.app.service.RecipeService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
-@CrossOrigin(
-        origins = {"http://localhost:5173"},
-        originPatterns = {"https://*.netlify.app"}
-)
 public class RecipeController {
     @Autowired
     private RecipeService recipeService;
@@ -74,12 +70,12 @@ public class RecipeController {
         recipeService.addRecipeToCollection(request.getRecId(), request.getUsrId(), request.getCollName());
     }
 
-    @DeleteMapping
+    @PostMapping("/collection/remove")
     public void deleteRecipeFromCollection(@RequestBody DeleteFromCollectionRequest request) throws Exception {
         recipeService.deleteRecipeFromCollection(request.getRecId(), request.getUsrId(), request.getCollName());
     }
 
-    @DeleteMapping("/{recId}")
+    @DeleteMapping("/{recId:\\d+}")
     public void deleteRecipe(@PathVariable int recId, @RequestParam int usrId) throws Exception {
         recipeService.deleteRecipe(recId, usrId);
     }
@@ -89,14 +85,14 @@ public class RecipeController {
         recipeService.addRecipe(recipeInfo);
     }
 
-    @Getter
+    @Data
     private static class AddToCollectionRequest {
         private int recId;
         private int usrId;
         private String collName;
     }
 
-    @Getter
+    @Data
     public static class DeleteFromCollectionRequest {
         private int recId;
         private int usrId;

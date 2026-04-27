@@ -169,6 +169,7 @@ export default function Collections() {
                             badgeResolver={() => activeCollection.collName}
                             showRemoveButton={true}
                             onRemove={handleRemoveRecipe}
+                            gridClassName="grid gap-6 md:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2"
                         />
                     ) : (
                         <EmptyState
