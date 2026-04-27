@@ -80,8 +80,8 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{recId}")
-    public void deleteRecipe(@PathVariable int recId) throws Exception {
-        recipeService.deleteRecipe(recId);
+    public void deleteRecipe(@PathVariable int recId, @RequestParam int usrId) throws Exception {
+        recipeService.deleteRecipe(recId, usrId);
     }
 
     @PostMapping

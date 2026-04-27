@@ -19,67 +19,85 @@ public class RecipeDAO {
 
     public void addRecipe(RecipeInfo recipeInfo) throws SQLException {
         Connection con = dataSource.getConnection();
-        Recipe recipe = recipeInfo.getRecipe();
-        String sql = "INSERT INTO recipe (rec_id, prep_time, dish_name, directions) VALUES (?,?,?,?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setInt(1,recipe.getRecID());
-            ps.setInt(2,recipe.getPrepTime());
-            ps.setString(3,recipe.getDishName());
-            ps.setString(4,recipe.getDirections());
-            ps.executeUpdate();
-        }
-        List<RecipeIngredient> ingredients = recipeInfo.getIngredients();
-        sql = "INSERT INTO recipe_ingredients (rec_id, ingredient) VALUES (?,?)";
-        for (RecipeIngredient ingredient: ingredients){
-            try (PreparedStatement ps = con.prepareStatement(sql)){
-                ps.setInt(1,ingredient.getRecId());
-                ps.setString(2,ingredient.getIngredient());
+        try {
+            con.setAutoCommit(false);
+
+            Recipe recipe = recipeInfo.getRecipe();
+            String sql = "INSERT INTO recipe (rec_id, prep_time, dish_name, directions) VALUES (?,?,?,?)";
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, recipe.getRecID());
+                ps.setInt(2, recipe.getPrepTime());
+                ps.setString(3, recipe.getDishName());
+                ps.setString(4, recipe.getDirections());
                 ps.executeUpdate();
             }
-        }
-        Published published = recipeInfo.getPublished();
-        sql = "INSERT INTO published (rec_id, usr_id, date) VALUES (?,?,?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setInt(1,published.getRecId());
-            ps.setInt(2,published.getUsrId());
-            ps.setDate(3,published.getDate());
-            ps.executeUpdate();
-        }
-        List<Category> categories = recipeInfo.getCategories();
-        sql = "INSERT INTO belongs (rec_id, cat_id) VALUES (?,?)";
-        for (Category category: categories){
-            try (PreparedStatement ps = con.prepareStatement(sql)){
-                ps.setInt(1,recipe.getRecID());
-                ps.setInt(2,category.getCatId());
+
+            List<RecipeIngredient> ingredients = recipeInfo.getIngredients();
+            sql = "INSERT INTO recipe_ingredients (rec_id, ingredient) VALUES (?,?)";
+            for (RecipeIngredient ingredient : ingredients) {
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, ingredient.getRecId());
+                    ps.setString(2, ingredient.getIngredient());
+                    ps.executeUpdate();
+                }
+            }
+
+            Published published = recipeInfo.getPublished();
+            sql = "INSERT INTO published (rec_id, usr_id, date) VALUES (?,?,?)";
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, published.getRecId());
+                ps.setInt(2, published.getUsrId());
+                ps.setDate(3, published.getDate());
                 ps.executeUpdate();
             }
-        }
-        List<Allergen> allergens = recipeInfo.getAllergens();
-        for (Allergen allergen: allergens){
+
+            List<Category> categories = recipeInfo.getCategories();
+            sql = "INSERT INTO belongs (rec_id, cat_id) VALUES (?,?)";
+            for (Category category : categories) {
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, recipe.getRecID());
+                    ps.setInt(2, category.getCatId());
+                    ps.executeUpdate();
+                }
+            }
+
+            List<Allergen> allergens = recipeInfo.getAllergens();
             sql = "INSERT INTO contains (all_id, rec_id) VALUES (?,?)";
-            try (PreparedStatement ps = con.prepareStatement(sql)){
-                ps.setInt(1,allergen.getAllId());
-                ps.setInt(2,recipe.getRecID());
-                ps.executeUpdate();
+            for (Allergen allergen : allergens) {
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, allergen.getAllId());
+                    ps.setInt(2, recipe.getRecID());
+                    ps.executeUpdate();
+                }
             }
-        }
-        if (recipeInfo.getDrink() != null) {
-            Drink drink = recipeInfo.getDrink();
-            sql = "INSERT INTO drink (rec_id, alc_perc) VALUES (?,?)";
-            try (PreparedStatement ps = con.prepareStatement(sql)){
-                ps.setInt(1,drink.getRecId());
-                ps.setDouble(2,drink.getAlcPerc());
-                ps.executeUpdate();
+
+            if (recipeInfo.getDrink() != null) {
+                Drink drink = recipeInfo.getDrink();
+                sql = "INSERT INTO drink (rec_id, alc_perc) VALUES (?,?)";
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, drink.getRecId());
+                    ps.setDouble(2, drink.getAlcPerc());
+                    ps.executeUpdate();
+                }
             }
-        }
-        if (recipeInfo.getSolid() != null) {
-            Solid solid = recipeInfo.getSolid();
-            sql = "INSERT INTO solid (rec_id, cook_time) VALUES (?,?)";
-            try (PreparedStatement ps = con.prepareStatement(sql)){
-                ps.setInt(1,solid.getRecId());
-                ps.setDouble(2,solid.getCookTime());
-                ps.executeUpdate();
+
+            if (recipeInfo.getSolid() != null) {
+                Solid solid = recipeInfo.getSolid();
+                sql = "INSERT INTO solids (rec_id, cook_time) VALUES (?,?)";
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, solid.getRecId());
+                    ps.setInt(2, solid.getCookTime());
+                    ps.executeUpdate();
+                }
             }
+
+            con.commit();
+        } catch (SQLException exception) {
+            con.rollback();
+            throw exception;
+        } finally {
+            con.setAutoCommit(true);
+            con.close();
         }
     }
 
@@ -353,6 +371,23 @@ public class RecipeDAO {
             con.setAutoCommit(true);
             con.close();
         }
+    }
+
+    public void deleteRecipeIfPublishedByUser(int recId, int usrId) throws SQLException {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ownershipCheck = con.prepareStatement(
+                     "SELECT 1 FROM published WHERE rec_id = ? AND usr_id = ?")) {
+            ownershipCheck.setInt(1, recId);
+            ownershipCheck.setInt(2, usrId);
+
+            try (ResultSet rs = ownershipCheck.executeQuery()) {
+                if (!rs.next()) {
+                    throw new SQLException("Only the publisher can delete this recipe.");
+                }
+            }
+        }
+
+        deleteRecipeCascade(recId);
     }
 
     private List<Recipe> runRecipeListQuery(String sql) throws SQLException {

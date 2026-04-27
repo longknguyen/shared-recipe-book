@@ -1,8 +1,15 @@
-import {Clock3, Eye, NotebookTabs, Trash2} from "lucide-react";
+import { Clock3, Eye, NotebookTabs, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatMinutes, getRecipeSummary } from "../../utils/formatters";
 
-export default function RecipeCard({ recipe, badge, delay = 0,onRemove,showRemoveButton=false }) {
+export default function RecipeCard({
+    recipe,
+    badge,
+    delay = 0,
+    onRemove,
+    showRemoveButton = false,
+    deleting = false,
+}) {
     return (
         <article
             className="animate-fade-up group flex h-full flex-col rounded-[30px] border border-white/70 bg-white/80 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-xl"
@@ -19,19 +26,22 @@ export default function RecipeCard({ recipe, badge, delay = 0,onRemove,showRemov
                 </div>
                 <div className="flex flex-col items-center gap-2">
                     <div className="rounded-2xl bg-brand-50 p-3 text-brand-600 transition duration-300 group-hover:bg-brand-500 group-hover:text-white">
-                    <NotebookTabs className="h-5 w-5" />
+                        <NotebookTabs className="h-5 w-5" />
                     </div>
                     {showRemoveButton && onRemove && (
-                    <button
-                        onClick={(e)=> {
-                        e.preventDefault();
-                        onRemove(recipe.recID);
-                    }}
-                    className="rounded-2xl bg-brand-50 p-3 text-brand-600 transition duration-300 hover:bg-brand-500 hover:text-white"
-                    >
-                        <Trash2 className="h-4 w-4" />
-                    </button>
-                        )}
+                        <button
+                            type="button"
+                            onClick={(event) => {
+                                event.preventDefault();
+                                onRemove(recipe.recID);
+                            }}
+                            disabled={deleting}
+                            className="rounded-2xl bg-brand-50 p-3 text-brand-600 transition duration-300 hover:bg-brand-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                            aria-label={`Delete ${recipe.dishName}`}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </button>
+                    )}
                 </div>
             </div>
 

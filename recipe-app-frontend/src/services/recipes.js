@@ -64,8 +64,14 @@ export async function addRecipeToCollection({ recId, usrId, collName }) {
     await api.post("/recipes/collection", { recId, usrId, collName });
 }
 
-export async function deleteRecipe(recId) {
-    await api.delete(`/recipes/${recId}`);
+export async function createRecipe(recipeInfo) {
+    await api.post("/recipes", recipeInfo);
+}
+
+export async function deleteRecipe(recId, usrId) {
+    await api.delete(`/recipes/${recId}`, {
+        params: { usrId },
+    });
 }
 
 export async function deleteRecipeFromCollection(usrId,recId,collName){

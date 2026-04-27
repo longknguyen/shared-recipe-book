@@ -69,7 +69,7 @@ public class RecipeService {
         recipeDAO.addRecipe(recipeInfo);
     }
 
-    public void deleteRecipe(int recId) throws SQLException {
-        recipeDAO.deleteRecipeCascade(recId);
+    public void deleteRecipe(int recId, int usrId) throws SQLException {
+        recipeDAO.deleteRecipeIfPublishedByUser(recId, usrId);
     }
 }
