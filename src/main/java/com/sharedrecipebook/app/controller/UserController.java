@@ -10,7 +10,10 @@ import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = {"http://localhost:5173", "https://snazzy-nasturtium-75bcb7.netlify.app"})
+@CrossOrigin(
+        origins = {"http://localhost:5173"},
+        originPatterns = {"https://*.netlify.app"}
+)
 public class UserController {
     @Autowired
     private UserService userService;
