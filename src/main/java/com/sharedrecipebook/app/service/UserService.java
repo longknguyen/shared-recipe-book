@@ -13,10 +13,20 @@ public class UserService {
     private UserDAO userDAO;
 
     public void registerUser(User user) throws Exception {
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            throw new RuntimeException("Username is required.");
+        }
+
         // ensure password is secure
         if (user.getPassword().length() < 6 || user.getPassword().equals(user.getUsername())){
             throw new RuntimeException("Password must be at least 6 characters and not the same as your username.");
         }
+
+        // Block duplicates in app logic even if DB constraints are missing.
+        if (userDAO.getUsrIdFromUsername(user.getUsername()) != -1) {
+            throw new RuntimeException("Username is taken!");
+        }
+
         try{
         userDAO.createUser(user);
         }catch (SQLException e){
