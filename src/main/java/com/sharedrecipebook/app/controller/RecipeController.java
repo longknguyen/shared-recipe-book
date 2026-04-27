@@ -1,6 +1,7 @@
 package com.sharedrecipebook.app.controller;
 
 import com.sharedrecipebook.app.model.Recipe;
+import com.sharedrecipebook.app.model.RecipeInfo;
 import com.sharedrecipebook.app.service.RecipeService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,11 @@ public class RecipeController {
     @DeleteMapping("/{recId}")
     public void deleteRecipe(@PathVariable int recId) throws Exception {
         recipeService.deleteRecipe(recId);
+    }
+
+    @PostMapping
+    public void addRecipe(@RequestBody RecipeInfo recipeInfo) throws Exception {
+        recipeService.addRecipe(recipeInfo);
     }
 
     @Getter

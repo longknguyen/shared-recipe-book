@@ -1,6 +1,6 @@
 package com.sharedrecipebook.app.dao;
 
-import com.sharedrecipebook.app.model.Recipe;
+import com.sharedrecipebook.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +16,72 @@ import java.util.List;
 public class RecipeDAO {
     @Autowired
     private DataSource dataSource;
+
+    public void addRecipe(RecipeInfo recipeInfo) throws SQLException {
+        Connection con = dataSource.getConnection();
+        Recipe recipe = recipeInfo.getRecipe();
+        String sql = "INSERT INTO recipe (rec_id, prep_time, dish_name, directions) VALUES (?,?,?,?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)){
+            ps.setInt(1,recipe.getRecID());
+            ps.setInt(2,recipe.getPrepTime());
+            ps.setString(3,recipe.getDishName());
+            ps.setString(4,recipe.getDirections());
+            ps.executeUpdate();
+        }
+        List<RecipeIngredient> ingredients = recipeInfo.getIngredients();
+        sql = "INSERT INTO recipe_ingredients (rec_id, ingredient) VALUES (?,?)";
+        for (RecipeIngredient ingredient: ingredients){
+            try (PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1,ingredient.getRecId());
+                ps.setString(2,ingredient.getIngredient());
+                ps.executeUpdate();
+            }
+        }
+        Published published = recipeInfo.getPublished();
+        sql = "INSERT INTO published (rec_id, usr_id, date) VALUES (?,?,?)";
+        try (PreparedStatement ps = con.prepareStatement(sql)){
+            ps.setInt(1,published.getRecId());
+            ps.setInt(2,published.getUsrId());
+            ps.setDate(3,published.getDate());
+            ps.executeUpdate();
+        }
+        List<Category> categories = recipeInfo.getCategories();
+        sql = "INSERT INTO belongs (rec_id, cat_id) VALUES (?,?)";
+        for (Category category: categories){
+            try (PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1,recipe.getRecID());
+                ps.setInt(2,category.getCatId());
+                ps.executeUpdate();
+            }
+        }
+        List<Allergen> allergens = recipeInfo.getAllergens();
+        for (Allergen allergen: allergens){
+            sql = "INSERT INTO contains (all_id, rec_id) VALUES (?,?)";
+            try (PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1,allergen.getAllId());
+                ps.setInt(2,recipe.getRecID());
+                ps.executeUpdate();
+            }
+        }
+        if (recipeInfo.getDrink() != null) {
+            Drink drink = recipeInfo.getDrink();
+            sql = "INSERT INTO drink (rec_id, alc_perc) VALUES (?,?)";
+            try (PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1,drink.getRecId());
+                ps.setDouble(2,drink.getAlcPerc());
+                ps.executeUpdate();
+            }
+        }
+        if (recipeInfo.getSolid() != null) {
+            Solid solid = recipeInfo.getSolid();
+            sql = "INSERT INTO solid (rec_id, cook_time) VALUES (?,?)";
+            try (PreparedStatement ps = con.prepareStatement(sql)){
+                ps.setInt(1,solid.getRecId());
+                ps.setDouble(2,solid.getCookTime());
+                ps.executeUpdate();
+            }
+        }
+    }
 
     public List<Recipe> getRecipesByCategory(String categoryName) throws SQLException {
         String sql = """
@@ -95,25 +161,26 @@ public class RecipeDAO {
         }
     }
 
-    public List<Recipe> getReviewsByRecipe(int recID) throws SQLException {
-        String sql = """
-                SELECT DISTINCT r.rec_id, r.prep_time, r.dish_name, r.directions
-                FROM recipe r
-                JOIN review rv ON rv.rec_id = r.rec_id
-                WHERE r.rec_id = ?
-                """;
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, recID);
-            try (ResultSet rs = ps.executeQuery()) {
-                List<Recipe> out = new ArrayList<>();
-                while (rs.next()) {
-                    out.add(mapRecipe(rs));
-                }
-                return out;
-            }
-        }
-    }
+    // redundant; done in ReviewDAO
+//    public List<Recipe> getReviewsByRecipe(int recID) throws SQLException {
+//        String sql = """
+//                SELECT DISTINCT r.rec_id, r.prep_time, r.dish_name, r.directions
+//                FROM recipe r
+//                JOIN review rv ON rv.rec_id = r.rec_id
+//                WHERE r.rec_id = ?
+//                """;
+//        try (Connection con = dataSource.getConnection();
+//             PreparedStatement ps = con.prepareStatement(sql)) {
+//            ps.setInt(1, recID);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                List<Recipe> out = new ArrayList<>();
+//                while (rs.next()) {
+//                    out.add(mapRecipe(rs));
+//                }
+//                return out;
+//            }
+//        }
+//    }
 
     public List<Recipe> getRecipesInCollection(int usrId, String collName) throws SQLException {
         String sql = """
