@@ -83,7 +83,7 @@ export default function RecipeComposer({
             return;
         }
 
-        if (form.cookTime != null && form.alcoholPercent != null){
+        if (cookTime !== null && alcoholPercent !== null){
             setError("Recipe cannot have both an alcohol% and a cook time.");
             return;
         }
