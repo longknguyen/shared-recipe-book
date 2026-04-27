@@ -8,7 +8,7 @@ import StatusBanner from "../components/common/StatusBanner.jsx";
 import AppShell from "../components/layout/AppShell.jsx";
 import RecipeGrid from "../components/recipes/RecipeGrid.jsx";
 import { createCollection, deleteCollection, getCollections } from "../services/collections.js";
-import { getCollectionRecipes } from "../services/recipes.js";
+import { getCollectionRecipes,deleteRecipeFromCollection } from "../services/recipes.js";
 import { getCurrentUser } from "../utils/auth.js";
 
 export default function Collections() {
@@ -96,6 +96,14 @@ export default function Collections() {
         }
     };
 
+    const handleRemoveRecipe = async (recId)=>{
+        if(!activeCollection) return;
+        await deleteRecipeFromCollection(user.usrID,recId,activeCollection.collName);
+
+        const updated = await getCollectionRecipes(user.usrID,activeCollection.collName);
+        setRecipes(updated);
+    };
+
     if (!user) {
         return (
             <AppShell accent="soft">
@@ -159,6 +167,8 @@ export default function Collections() {
                             emptyTitle="Nothing saved here yet"
                             emptyDescription="Open a recipe and add it to this collection from the detail page."
                             badgeResolver={() => activeCollection.collName}
+                            showRemoveButton={true}
+                            onRemove={handleRemoveRecipe}
                         />
                     ) : (
                         <EmptyState

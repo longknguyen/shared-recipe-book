@@ -67,3 +67,10 @@ export async function addRecipeToCollection({ recId, usrId, collName }) {
 export async function deleteRecipe(recId) {
     await api.delete(`/recipes/${recId}`);
 }
+
+export async function deleteRecipeFromCollection(usrId,recId,collName){
+    await api.delete("/recipes",{
+        data: {usrId, recId, collName}
+    });
+
+}

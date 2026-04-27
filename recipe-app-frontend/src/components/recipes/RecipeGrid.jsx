@@ -1,7 +1,7 @@
 import EmptyState from "../common/EmptyState.jsx";
 import RecipeCard from "./RecipeCard.jsx";
 
-export default function RecipeGrid({ recipes, emptyTitle, emptyDescription, badgeResolver }) {
+export default function RecipeGrid({ recipes, emptyTitle, emptyDescription, badgeResolver, showRemoveButton = false, onRemove }) {
     if (!recipes.length) {
         return <EmptyState title={emptyTitle} description={emptyDescription} />;
     }
@@ -14,6 +14,9 @@ export default function RecipeGrid({ recipes, emptyTitle, emptyDescription, badg
                     recipe={recipe}
                     badge={badgeResolver ? badgeResolver(recipe) : null}
                     delay={index * 80}
+
+                    showRemoveButton = {showRemoveButton}
+                    onRemove={onRemove}
                 />
             ))}
         </section>

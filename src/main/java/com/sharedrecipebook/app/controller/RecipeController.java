@@ -75,7 +75,7 @@ public class RecipeController {
     }
 
     @DeleteMapping
-    public void deleteRecipeFromCollection(@RequestParam DeleteFromCollectionRequest request) throws Exception {
+    public void deleteRecipeFromCollection(@RequestBody DeleteFromCollectionRequest request) throws Exception {
         recipeService.deleteRecipeFromCollection(request.getRecId(), request.getUsrId(), request.getCollName());
     }
 
@@ -97,7 +97,7 @@ public class RecipeController {
     }
 
     @Getter
-    private static class DeleteFromCollectionRequest {
+    public static class DeleteFromCollectionRequest {
         private int recId;
         private int usrId;
         private String collName;
