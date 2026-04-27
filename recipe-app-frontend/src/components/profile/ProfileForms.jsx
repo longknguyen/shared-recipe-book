@@ -1,6 +1,17 @@
 import { useState } from "react";
 import StatusBanner from "../common/StatusBanner.jsx";
 
+const OCCUPATIONS = [
+    "Student",
+    "Chef",
+    "Parent",
+    "Designer",
+    "Developer",
+    "Teacher",
+    "Freelancer",
+    "Other",
+];
+
 export function EditProfileForm({ user, onSave, saving }) {
     const [age, setAge] = useState(user.age || "");
     const [occupation, setOccupation] = useState(user.occupation || "");
@@ -27,20 +38,32 @@ export function EditProfileForm({ user, onSave, saving }) {
             <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Profile details</p>
             <h3 className="mt-2 text-2xl font-semibold text-brand-950">Update account info</h3>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <input
-                    type="number"
-                    min="1"
+                <select
                     value={age}
                     onChange={(event) => setAge(event.target.value)}
-                    placeholder="Age"
                     className="rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-950 outline-none transition duration-300 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-100"
-                />
-                <input
+                >
+                    <option value="">Select age</option>
+                    {Array.from({ length: 85 }, (_, index) => index + 15).map((item) => (
+                        <option key={item} value={item}>
+                            {item}
+                        </option>
+                    ))}
+                </select>
+                <select
                     value={occupation}
                     onChange={(event) => setOccupation(event.target.value)}
-                    placeholder="Occupation"
                     className="rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-950 outline-none transition duration-300 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-100"
-                />
+                >
+                    <option value="">Select occupation</option>
+                    {OCCUPATIONS.map((item) => (
+                        <option key={item} value={item}>
+                            {item}
+                        </option>
+                    ))}
+                </select>
+
+
             </div>
             <StatusBanner tone="danger" message={error} />
             <button
@@ -65,6 +88,9 @@ export function ChangePasswordForm({ user, onSave, saving }) {
         if (!oldPassword || !newPassword) {
             setError("Fill in both password fields.");
             return;
+        }
+        if(newPassword.length<6){
+            setError("Password must have at least 6 characters.");
         }
 
         setError("");

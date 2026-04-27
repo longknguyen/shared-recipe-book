@@ -137,7 +137,7 @@ export default function Collections() {
                     )}
                 </div>
 
-                <section className="space-y-6">
+                <section className="space-y-6 ">
                     <div className="animate-fade-up rounded-[32px] border border-white/70 bg-white/80 p-6 shadow-soft">
                         <p className="text-sm uppercase tracking-[0.3em] text-brand-500">Selected collection</p>
                         <h1 className="mt-2 text-4xl font-semibold tracking-tight text-brand-950">

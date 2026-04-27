@@ -14,7 +14,7 @@ public class UserService {
 
     public void registerUser(User user) throws Exception {
         // ensure password is secure
-        if (user.getPassword().length() <= 6 || user.getPassword().equals(user.getUsername())){
+        if (user.getPassword().length() < 6 || user.getPassword().equals(user.getUsername())){
             throw new RuntimeException("Password must be at least 6 characters and not the same as your username.");
         }
         try{
@@ -45,7 +45,13 @@ public class UserService {
     }
 
     public void changePassword(int id, String oldPassword, String newPassword) throws Exception {
-        userDAO.changePassword(id, oldPassword, newPassword);
+        if(newPassword.length() >= 6)
+        {
+            userDAO.changePassword(id, oldPassword, newPassword);
+        }
+        else{
+            throw new Exception("Password must be at least 6 characters.");
+        }
     }
 
     public void editUserInfo(User user) throws Exception {
