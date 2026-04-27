@@ -77,3 +77,8 @@ export async function deleteRecipe(recId, usrId) {
 export async function deleteRecipeFromCollection(usrId,recId,collName){
     await api.post("/recipes/collection/remove", { usrId, recId, collName });
 }
+
+export async function getRecipeIngredients(recId) {
+    const { data } = await api.get(`/recipes/${recId}/ingredients`);
+    return data;
+}
