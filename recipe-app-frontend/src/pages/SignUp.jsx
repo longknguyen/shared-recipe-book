@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AuthInput from "../components/auth/AuthInput.jsx";
 import AuthPanel from "../components/auth/AuthPanel.jsx";
 import AppShell from "../components/layout/AppShell.jsx";
+import { usernameExists } from "../services/users.js";
 import { setPendingUser } from "../utils/auth.js";
 
 export default function Register() {
@@ -15,6 +16,17 @@ export default function Register() {
 
         if (!form.username.trim() || !form.password.trim()) {
             setError("Username and password are both required.");
+            return;
+        }
+
+        try {
+            const taken = await usernameExists(form.username.trim());
+            if (taken) {
+                setError("Username is taken!");
+                return;
+            }
+        } catch (checkError) {
+            setError(checkError.message || "Unable to validate username right now.");
             return;
         }
 

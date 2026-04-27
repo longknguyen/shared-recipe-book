@@ -4,6 +4,11 @@ export async function registerUser(user) {
     await api.post("/users/register", user);
 }
 
+export async function usernameExists(username) {
+    const { data } = await api.get(`/users/exist/${encodeURIComponent(username)}`);
+    return data;
+}
+
 export async function loginUser(credentials) {
     const { data } = await api.post("/users/login", credentials);
     return data;
