@@ -55,7 +55,7 @@ public class UserService {
     }
 
     public void changePassword(int id, String oldPassword, String newPassword) throws Exception {
-        if(newPassword.length() >= 6 || userDAO.getUserById(id).getUsername().equals(newPassword))
+        if(newPassword.length() >= 6 && !userDAO.getUserById(id).getUsername().equals(newPassword))
         {
             userDAO.changePassword(id, oldPassword, newPassword);
         }
