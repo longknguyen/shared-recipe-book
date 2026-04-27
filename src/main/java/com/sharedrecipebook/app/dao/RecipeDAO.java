@@ -51,6 +51,17 @@ public class RecipeDAO {
         }
     }
 
+    public void deleteRecipeFromCollection(int recID, int usrID, String collName) throws SQLException {
+        String sql = "DELETE FROM saved_in WHERE rec_id = ? AND usr_id = ? AND coll_name = ?";
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, recID);
+            ps.setInt(2, usrID);
+            ps.setString(3, collName);
+            ps.executeUpdate();
+        }
+    }
+
     public List<Recipe> getAllRecipes() throws SQLException {
         String sql = "SELECT rec_id, prep_time, dish_name, directions FROM recipe ORDER BY dish_name";
         try (Connection con = dataSource.getConnection();

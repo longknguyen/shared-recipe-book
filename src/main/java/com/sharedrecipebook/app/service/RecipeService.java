@@ -60,6 +60,10 @@ public class RecipeService {
         recipeDAO.addRecipeToCollection(recId, usrId, collName);
     }
 
+    public void deleteRecipeFromCollection(int recId, int usrId, String collName) throws SQLException {
+        recipeDAO.deleteRecipeFromCollection(recId, usrId, collName);
+    }
+
     public void deleteRecipe(int recId) throws SQLException {
         recipeDAO.deleteRecipeCascade(recId);
     }
