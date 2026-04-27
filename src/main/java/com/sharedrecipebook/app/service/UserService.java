@@ -55,12 +55,12 @@ public class UserService {
     }
 
     public void changePassword(int id, String oldPassword, String newPassword) throws Exception {
-        if(newPassword.length() >= 6)
+        if(newPassword.length() >= 6 || userDAO.getUserById(id).getUsername().equals(newPassword))
         {
             userDAO.changePassword(id, oldPassword, newPassword);
         }
         else{
-            throw new Exception("Password must be at least 6 characters.");
+            throw new Exception("Password must be at least 6 characters and not the same as your username.");
         }
     }
 
