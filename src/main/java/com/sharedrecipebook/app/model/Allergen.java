@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Allergen {
-    private int allID;
+    private int allId;
     private String name;
 }
