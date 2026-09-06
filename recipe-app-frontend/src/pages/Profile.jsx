@@ -88,6 +88,7 @@ export default function Profile() {
         }
     };
 
+
     const handleDelete = async (payload) => {
         try {
             setDeleting(true);
